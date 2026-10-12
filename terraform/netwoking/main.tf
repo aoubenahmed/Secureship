@@ -57,41 +57,6 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"]
 }
 
-resource "aws_security_group" "public_ssh" {
-  name   = "${var.project_name}-public-ssh"
-  vpc_id = module.vpc.vpc_id
-
-  ingress {
-    description = "SSH from my IP"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-
-    cidr_blocks = ["${chomp(data.http.my_ip.response_body)}/32"]
-  }
-
-  egress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
-
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
-resource "aws_instance" "public_server1" {
-  ami           = data.aws_ami.ubuntu.id
-  instance_type = var.instance_type
-  key_name      = "secureship-keypair"
-
-  vpc_security_group_ids = [aws_security_group.public_ssh.id]
-  subnet_id              = module.vpc.public_subnets[0]
-
-  tags = {
-    Name = "${var.project_name}-${var.public_server1}"
-  }
-}
-
 resource "aws_security_group" "private_servers" {
   name   = "${var.project_name}-private-servers"
   vpc_id = module.vpc.vpc_id
@@ -101,7 +66,6 @@ resource "aws_security_group" "private_servers" {
     from_port       = 22
     to_port         = 22
     protocol        = "tcp"
-    security_groups = [aws_security_group.public_ssh.id]
   }
 
   egress {
@@ -121,5 +85,17 @@ resource "aws_instance" "private_server1" {
 
   tags = {
     Name = "${var.project_name}-${var.private_server1}"
+  }
+}
+
+resource "aws_instance" "private_server2" {
+  ami           = data.aws_ami.ubuntu.id
+  instance_type = var.instance_type
+
+  vpc_security_group_ids = [aws_security_group.private_servers.id]
+  subnet_id              = module.vpc.private_subnets[1]
+
+  tags = {
+    Name = "${var.project_name}-${var.private_server2}"
   }
 }
