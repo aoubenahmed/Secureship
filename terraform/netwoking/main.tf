@@ -31,11 +31,14 @@ module "nat" {
   vpc_id = module.vpc.vpc_id
 
   public_subnet               = module.vpc.public_subnets[count.index]
-  private_subnets_cidr_blocks = [module.vpc.private_subnets_cidr_blocks[count.index]]
-  private_route_table_ids     = [module.vpc.private_route_table_ids[count.index]]
+  private_subnets_cidr_blocks = module.vpc.private_subnets_cidr_blocks
+  private_route_table_ids     = module.vpc.private_route_table_ids
 
   instance_types    = ["t3.micro"]
   use_spot_instance = false
+
+  # Keep VPC routes and associations available until NAT-dependent workloads stop.
+  depends_on = [module.vpc]
 }
 
 resource "aws_eip" "nat" {
@@ -62,10 +65,10 @@ resource "aws_security_group" "private_servers" {
   vpc_id = module.vpc.vpc_id
 
   ingress {
-    description     = "SSH from public servers"
-    from_port       = 22
-    to_port         = 22
-    protocol        = "tcp"
+    description = "SSH from public servers"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
   }
 
   egress {

@@ -1,0 +1,78 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ManageSecureShipRolesAndInstanceProfiles",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateRole",
+        "iam:GetRole",
+        "iam:UpdateRole",
+        "iam:UpdateRoleDescription",
+        "iam:UpdateAssumeRolePolicy",
+        "iam:DeleteRole",
+        "iam:TagRole",
+        "iam:UntagRole",
+        "iam:ListRoleTags",
+        "iam:ListRolePolicies",
+        "iam:GetRolePolicy",
+        "iam:PutRolePolicy",
+        "iam:DeleteRolePolicy",
+        "iam:ListAttachedRolePolicies",
+        "iam:ListInstanceProfilesForRole",
+        "iam:CreateInstanceProfile",
+        "iam:GetInstanceProfile",
+        "iam:DeleteInstanceProfile",
+        "iam:AddRoleToInstanceProfile",
+        "iam:RemoveRoleFromInstanceProfile",
+        "iam:TagInstanceProfile",
+        "iam:UntagInstanceProfile",
+        "iam:ListInstanceProfileTags"
+      ],
+      "Resource": [
+        "arn:aws:iam::289829301555:role/secureship-*",
+        "arn:aws:iam::289829301555:instance-profile/secureship-*"
+      ]
+    },
+    {
+      "Sid": "AttachApprovedSecureShipRolePolicies",
+      "Effect": "Allow",
+      "Action": ["iam:AttachRolePolicy", "iam:DetachRolePolicy"],
+      "Resource": "arn:aws:iam::289829301555:role/secureship-*",
+      "Condition": {
+        "ArnEquals": {
+          "iam:PolicyARN": [
+            "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role",
+            "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy",
+            "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "PassSecureShipRolesToEC2AndECS",
+      "Effect": "Allow",
+      "Action": "iam:PassRole",
+      "Resource": "arn:aws:iam::289829301555:role/secureship-*",
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": [
+            "ec2.amazonaws.com",
+            "ecs-tasks.amazonaws.com",
+            "autoscaling.amazonaws.com"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "ManageECSScalingTargetTags",
+      "Effect": "Allow",
+      "Action": [
+        "application-autoscaling:ListTagsForResource",
+        "application-autoscaling:TagResource",
+        "application-autoscaling:UntagResource"
+      ],
+      "Resource": "arn:aws:application-autoscaling:eu-north-1:289829301555:scalable-target/*"
+    }
+  ]
+}

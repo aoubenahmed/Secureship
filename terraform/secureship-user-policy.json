@@ -1,0 +1,200 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "VisualEditor0",
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetRole",
+        "iam:PassRole",
+        "s3:*",
+        "ecs:*",
+        "ec2:*",
+        "iam:CreateRole",
+        "elasticloadbalancing:*",
+        "ssmmessages:*",
+        "iam:ListInstanceProfiles",
+        "ecr:CreateRepository",
+        "logs:CreateLogGroup",
+        "iam:TagRole",
+        "ecr:TagResource",
+        "iam:ListRolePolicies",
+        "ssm:GetParameter",
+        "ecr:DescribeImages",
+        "ecr:DescribePullThroughCacheRules",
+        "ecr:ListImages",
+        "ecr:ListPullTimeUpdateExclusions",
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:BatchGetImage",
+        "ecr:DescribeImageReplicationStatus",
+        "ecr:BatchGetRepositoryScanningConfiguration",
+        "ecr:DescribeImageScanFindings",
+        "ecr:DescribeImageSigningStatus",
+        "ecr:DescribeRegistry",
+        "ecr:DescribeRepositories",
+        "ecr:DescribeRepositoryCreationTemplates",
+        "ecr:GetAccountSetting",
+        "ecr:GetAuthorizationToken",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:GetImageCopyStatus",
+        "ecr:GetLifecyclePolicy",
+        "ecr:GetLifecyclePolicyPreview",
+        "ecr:GetRegistryPolicy",
+        "ecr:GetRegistryScanningConfiguration",
+        "ecr:GetSigningConfiguration",
+        "ecr:GetRepositoryPolicy",
+        "ecr:ListTagsForResource",
+        "ecr:ValidatePullThroughCacheRule",
+        "ecr:BatchDeleteImage",
+        "ecr:BatchImportUpstreamImage",
+        "ecr:CompleteLayerUpload",
+        "ecr:CreatePullThroughCacheRule",
+        "iam:ListRoles",
+        "iam:ListRoleTags"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "VisualEditor1",
+      "Effect": "Allow",
+      "Action": [
+        "iam:DetachRolePolicy",
+        "iam:AttachRolePolicy"
+      ],
+      "Resource": "arn:aws:iam::289829301555:role/secureship-*",
+      "Condition": {
+        "ArnEquals": {
+          "iam:PolicyARN": [
+            "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
+            "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role",
+            "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor2",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateInstanceProfile",
+        "iam:DeleteInstanceProfile",
+        "iam:UpdateAssumeRolePolicy",
+        "iam:GetInstanceProfile",
+        "iam:ListRoleTags",
+        "iam:UntagRole",
+        "iam:TagRole",
+        "iam:RemoveRoleFromInstanceProfile",
+        "iam:CreateRole",
+        "iam:DeleteRole",
+        "iam:ListInstanceProfileTags",
+        "iam:PutRolePolicy",
+        "iam:AddRoleToInstanceProfile",
+        "iam:ListInstanceProfilesForRole",
+        "iam:ListAttachedRolePolicies",
+        "iam:DeleteRolePolicy",
+        "iam:UpdateRole",
+        "iam:ListRolePolicies",
+        "iam:UntagInstanceProfile",
+        "iam:GetRolePolicy",
+        "iam:TagInstanceProfile"
+      ],
+      "Resource": [
+        "arn:aws:iam::289829301555:role/secureship-*",
+        "arn:aws:iam::289829301555:instance-profile/secureship-*"
+      ]
+    },
+    {
+      "Sid": "ReadTerraformScalingAndLogs",
+      "Effect": "Allow",
+      "Action": [
+        "autoscaling:Describe*",
+        "application-autoscaling:Describe*",
+        "logs:DescribeLogGroups",
+        "cloudwatch:DescribeAlarms",
+        "cloudwatch:GetMetricStatistics"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "ManageSecureShipAutoScalingGroups",
+      "Effect": "Allow",
+      "Action": [
+        "autoscaling:CreateAutoScalingGroup",
+        "autoscaling:UpdateAutoScalingGroup",
+        "autoscaling:DeleteAutoScalingGroup",
+        "autoscaling:CreateOrUpdateTags",
+        "autoscaling:DeleteTags"
+      ],
+      "Resource": "arn:aws:autoscaling:eu-north-1:289829301555:autoScalingGroup:*:autoScalingGroupName/secureship-*"
+    },
+    {
+      "Sid": "ManageApplicationScaling",
+      "Effect": "Allow",
+      "Action": [
+        "application-autoscaling:RegisterScalableTarget",
+        "application-autoscaling:DeregisterScalableTarget",
+        "application-autoscaling:PutScalingPolicy",
+        "application-autoscaling:DeleteScalingPolicy",
+        "application-autoscaling:ListTagsForResource",
+        "application-autoscaling:TagResource",
+        "application-autoscaling:UntagResource"
+      ],
+      "Resource": "arn:aws:application-autoscaling:eu-north-1:289829301555:scalable-target/*"
+    },
+    {
+      "Sid": "ManageSecureShipLogGroups",
+      "Effect": "Allow",
+      "Action": [
+        "logs:ListTagsForResource",
+        "logs:ListTagsLogGroup",
+        "logs:PutRetentionPolicy",
+        "logs:DeleteRetentionPolicy",
+        "logs:TagResource",
+        "logs:UntagResource",
+        "logs:TagLogGroup",
+        "logs:UntagLogGroup",
+        "logs:DeleteLogGroup"
+      ],
+      "Resource": "arn:aws:logs:eu-north-1:289829301555:log-group:/ecs/secureship-*"
+    },
+    {
+      "Sid": "ManageSecureShipRepositoryAndImages",
+      "Effect": "Allow",
+      "Action": [
+        "ecr:InitiateLayerUpload",
+        "ecr:UploadLayerPart",
+        "ecr:PutImage",
+        "ecr:PutImageTagMutability",
+        "ecr:PutImageScanningConfiguration",
+        "ecr:UntagResource",
+        "ecr:DeleteRepository"
+      ],
+      "Resource": "arn:aws:ecr:eu-north-1:289829301555:repository/secureship-app"
+    },
+    {
+      "Sid": "ManageECSScalingAlarms",
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:PutMetricAlarm",
+        "cloudwatch:DeleteAlarms"
+      ],
+      "Resource": "arn:aws:cloudwatch:eu-north-1:289829301555:alarm:TargetTracking-service/secureship-*"
+    },
+    {
+      "Sid": "CreateRequiredServiceLinkedRoles",
+      "Effect": "Allow",
+      "Action": "iam:CreateServiceLinkedRole",
+      "Resource": "arn:aws:iam::289829301555:role/aws-service-role/*",
+      "Condition": {
+        "StringEquals": {
+          "iam:AWSServiceName": [
+            "ecs.amazonaws.com",
+            "autoscaling.amazonaws.com",
+            "ecs.application-autoscaling.amazonaws.com",
+            "elasticloadbalancing.amazonaws.com"
+          ]
+        }
+      }
+    }
+  ]
+}
